@@ -1,0 +1,206 @@
+@import 'tailwindcss';
+@import 'tw-animate-css';
+
+/* Class-based dark mode: next-themes puts "dark" on <html> before the first paint. */
+@custom-variant dark (&:where(.dark, .dark *));
+
+/*
+ * Theme tokens: light values in :root, dark values in .dark. Components use them only through
+ * Tailwind utilities (bg-card, text-muted-foreground, border-input, ring-ring and so on); colours
+ * are never written in components. Primary is navy, accent is teal. Every text pair meets WCAG AA
+ * (4.5:1) and every focus ring, field border and chart bar 3:1, in both themes; src/app/tokens.test.ts
+ * checks the pairs listed in .kiro/specs/frontend-shell/design.md.
+ */
+:root {
+  color-scheme: light;
+  --radius: 0.5rem;
+
+  --background: #f6f8fb;
+  --foreground: #0f172a;
+  --card: #ffffff;
+  --card-foreground: #0f172a;
+  --popover: #ffffff;
+  --popover-foreground: #0f172a;
+
+  --muted: #eef2f6;
+  --muted-foreground: #5b6b7f;
+  /* Decorative dividers only. Form fields use --input, which meets 3:1. */
+  --border: #e2e8f0;
+  --input: #7b8798;
+  --ring: #2a7f8e;
+
+  --primary: #1f3a5f;
+  --primary-foreground: #ffffff;
+  --primary-soft: #e8eef6;
+
+  /* Accent fills and icons. Accent-coloured text uses --accent-strong (AA on the page background). */
+  --accent: #2a7f8e;
+  --accent-foreground: #ffffff;
+  --accent-soft: #e5f2f4;
+  --accent-strong: #226f7c;
+
+  --secondary: #eef2f6;
+  --secondary-foreground: #1f3a5f;
+
+  --success: #1e6b45;
+  --success-soft: #e6f4ec;
+  --warning: #8a4b08;
+  --warning-soft: #fdf3e2;
+  --destructive: #b42318;
+  --destructive-foreground: #ffffff;
+  --destructive-soft: #fdecea;
+  --info: #1d5b8f;
+  --info-soft: #e6f0f9;
+
+  --chart-1: #1f3a5f;
+  --chart-2: #2a7f8e;
+  --chart-3: #5e7fae;
+  --chart-4: #b07a1f;
+
+  /* Navy sidebar in light mode, as before. */
+  --sidebar: #1f3a5f;
+  --sidebar-foreground: #e6edf5;
+  --sidebar-muted: #a9bbd0;
+  --sidebar-active: #2d4f7c;
+  --sidebar-active-foreground: #ffffff;
+  --sidebar-ring: #7fc6d3;
+  --sidebar-border: #2c4a70;
+
+  /* Backdrop behind dialogs and drawers, used at 50% opacity. */
+  --overlay: #0f172a;
+}
+
+.dark {
+  color-scheme: dark;
+
+  --background: #0e1621;
+  --foreground: #e6edf5;
+  --card: #151f2d;
+  --card-foreground: #e6edf5;
+  --popover: #151f2d;
+  --popover-foreground: #e6edf5;
+
+  --muted: #1c2838;
+  --muted-foreground: #94a3b8;
+  --border: #243244;
+  --input: #64758c;
+  --ring: #4fb3c3;
+
+  --primary: #7fa7d9;
+  --primary-foreground: #0e1621;
+  --primary-soft: #1d2d44;
+
+  --accent: #4fb3c3;
+  --accent-foreground: #0e1621;
+  --accent-soft: #143039;
+  --accent-strong: #4fb3c3;
+
+  --secondary: #1c2838;
+  --secondary-foreground: #e6edf5;
+
+  --success: #74d3a0;
+  --success-soft: #12301f;
+  --warning: #f0c36a;
+  --warning-soft: #36290f;
+  --destructive: #f59e9e;
+  --destructive-foreground: #0e1621;
+  --destructive-soft: #3a1a1e;
+  --info: #8ec5f0;
+  --info-soft: #12283f;
+
+  --chart-1: #7fa7d9;
+  --chart-2: #4fb3c3;
+  --chart-3: #a7b8e8;
+  --chart-4: #e0b060;
+
+  --sidebar: #111a27;
+  --sidebar-foreground: #e6edf5;
+  --sidebar-muted: #94a3b8;
+  --sidebar-active: #1d2d44;
+  --sidebar-active-foreground: #ffffff;
+  --sidebar-ring: #4fb3c3;
+  --sidebar-border: #243244;
+
+  --overlay: #020617;
+}
+
+@theme inline {
+  --font-sans:
+    ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial,
+    'Noto Sans', sans-serif;
+  --font-mono: ui-monospace, SFMono-Regular, Menlo, Consolas, 'Liberation Mono', monospace;
+
+  --radius-sm: calc(var(--radius) - 2px);
+  --radius-md: var(--radius);
+  --radius-lg: calc(var(--radius) + 2px);
+
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-primary-soft: var(--primary-soft);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-accent-soft: var(--accent-soft);
+  --color-accent-strong: var(--accent-strong);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-success: var(--success);
+  --color-success-soft: var(--success-soft);
+  --color-warning: var(--warning);
+  --color-warning-soft: var(--warning-soft);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-destructive-soft: var(--destructive-soft);
+  --color-info: var(--info);
+  --color-info-soft: var(--info-soft);
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-muted: var(--sidebar-muted);
+  --color-sidebar-active: var(--sidebar-active);
+  --color-sidebar-active-foreground: var(--sidebar-active-foreground);
+  --color-sidebar-ring: var(--sidebar-ring);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-overlay: var(--overlay);
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  html {
+    @apply bg-background text-foreground antialiased;
+  }
+  body {
+    @apply min-h-screen font-sans text-sm;
+  }
+  /* Tabular figures keep amounts, counts and dates aligned. */
+  .tabular {
+    font-variant-numeric: tabular-nums;
+  }
+}
+
+/* Reduced motion: no transitions, no repeating animations, no smooth scrolling. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
