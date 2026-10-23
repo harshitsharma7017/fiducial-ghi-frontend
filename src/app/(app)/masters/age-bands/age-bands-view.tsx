@@ -30,7 +30,7 @@ import {
  * masters.manage. Option 2 is not provided: its boundaries wait for the client (AB-1).
  */
 export function AgeBandsView() {
-  const canManage = usePermission('masters.manage');
+  const canManage = usePermission('age_bands.manage');
   const sets = useQuery(ageBandSetsQuery());
   return (
     <>

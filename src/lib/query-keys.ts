@@ -8,6 +8,7 @@ export const queryKeys = {
   pincode: (pincode: string) => ['masters', 'pincode', pincode] as const,
   pincodes: (q: string) => ['masters', 'pincodes', q] as const,
   users: ['users'] as const,
+  roles: ['roles'] as const,
   clients: {
     all: ['clients'] as const,
     list: (q: string) => ['clients', 'list', q] as const,

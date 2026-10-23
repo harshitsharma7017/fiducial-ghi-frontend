@@ -185,7 +185,7 @@ function FileIssues({ error }: { error: unknown }) {
 
 /** An import's counts, its rows and problems, and the import or discard buttons. */
 function ImportReview({ importId, onClose }: { importId: string; onClose: () => void }) {
-  const canProcess = usePermission('claims.process');
+  const canImport = usePermission('claims.tpa_import');
   const record = useQuery(tpaImportQuery(importId));
   const [only, setOnly] = useState<'ALL' | 'ERRORS' | 'WARNINGS'>('ALL');
   const [page, setPage] = useState(1);
@@ -387,7 +387,7 @@ function ImportReview({ importId, onClose }: { importId: string; onClose: () => 
           </div>
         )}
         <Pager page={page} pages={pages} total={rows.data?.total ?? 0} onPage={setPage} />
-        {data.status === 'VALIDATED' && canProcess ? (
+        {data.status === 'VALIDATED' && canImport ? (
           <div className="flex flex-wrap gap-2">
             <Button
               disabled={data.counts.invalid > 0 || data.counts.valid === 0 || commit.isPending}

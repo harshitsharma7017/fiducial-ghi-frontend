@@ -35,7 +35,7 @@ import {
 
 /** Every group health case, most recently changed first, searchable by reference or company. */
 export function GhiListView() {
-  const canCreate = usePermission('proposals.create');
+  const canCreate = usePermission('gmc.create');
   return (
     <>
       <PageHeader

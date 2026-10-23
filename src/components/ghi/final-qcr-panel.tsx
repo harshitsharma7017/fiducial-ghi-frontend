@@ -30,7 +30,7 @@ import { TermsFields } from './terms-fields';
  * recorded as a new version so the quotes and the accepted QCR stay as they were.
  */
 export function FinalQcrPanel({ record }: { record: GhiCaseRecord }) {
-  const canEdit = usePermission('proposals.edit');
+  const canEdit = usePermission('gmc.edit');
   const query = useQuery(ghiFinalQuery(record.id));
   const [editing, setEditing] = useState(false);
   if (query.isPending) return <LoadingState label="Loading the final QCR" />;

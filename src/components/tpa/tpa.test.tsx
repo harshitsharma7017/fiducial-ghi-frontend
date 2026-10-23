@@ -7,14 +7,15 @@ import { ClaimsBoard } from '@/components/claims/claims-board';
 import { json, urlOf } from '@/components/proposals/rfq/rfq-fixtures.test-utils';
 import { ClaimsAnalysisPanel } from '@/components/reports/claims-analysis';
 import { RenewalAnalysisPanel } from '@/components/reports/renewal-analysis';
-import type {
-  ClaimsAnalysisResponse,
-  RenewalAnalysis,
-  RenewalYear,
-  InsuredPolicyView,
-  Role,
-  TpaClaimRecord,
-  TpaImport,
+import {
+  legacyPermissionsOf,
+  type ClaimsAnalysisResponse,
+  type RenewalAnalysis,
+  type RenewalYear,
+  type InsuredPolicyView,
+  type LegacyRole as Role,
+  type TpaClaimRecord,
+  type TpaImport,
 } from '@/shared';
 import { TpaClaimsPanel } from './tpa-claims';
 import { TpaFormatsPanel } from './tpa-formats';
@@ -27,7 +28,16 @@ import { TpaImportPanel } from './tpa-import';
 
 const roles = vi.hoisted(() => ({ current: ['ACCOUNT_MANAGER'] as Role[] }));
 vi.mock('@/hooks/use-current-user', () => ({
-  useCurrentUser: () => ({ data: { id: 'b'.repeat(24), name: 'Asha Rao', roles: roles.current } }),
+  useCurrentUser: () => ({
+    data: {
+      id: 'b'.repeat(24),
+      name: 'Asha Rao',
+      roles: roles.current,
+      roleNames: [],
+      // As /auth/me gives them for the migrated legacy roles.
+      permissions: legacyPermissionsOf(roles.current),
+    },
+  }),
 }));
 vi.mock('next/navigation', () => ({ useRouter: () => ({ push: vi.fn() }) }));
 

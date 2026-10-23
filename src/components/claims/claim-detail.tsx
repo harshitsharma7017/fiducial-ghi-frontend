@@ -49,7 +49,7 @@ export function ClaimDetailView({ id }: { id: string }) {
 }
 
 function Loaded({ claim }: { claim: ClaimDetail }) {
-  const canAdmin = usePermission('claims.admin');
+  const canAssign = usePermission('claims.assign');
   const [move, setMove] = useState<PendingMove | null>(null);
   const [dialog, setDialog] = useState<'edit' | 'assign' | null>(null);
   return (
@@ -90,7 +90,7 @@ function Loaded({ claim }: { claim: ClaimDetail }) {
               Edit details
             </Button>
           ) : null}
-          {canAdmin ? (
+          {canAssign ? (
             <Button type="button" variant="outline" onClick={() => setDialog('assign')}>
               <UserCog aria-hidden="true" />
               Assign

@@ -258,7 +258,7 @@ function Fact({ label, children }: { label: string; children: React.ReactNode })
  * Admin: both are decided by the API, never hidden here.
  */
 function ClaimSheet({ claimId, onClose }: { claimId: string; onClose: () => void }) {
-  const canProcess = usePermission('claims.process');
+  const canReview = usePermission('claims.tpa_import');
   const claim = useQuery(tpaClaimQuery(claimId));
   const history = useQuery(tpaClaimHistoryQuery(claimId));
   return (
@@ -301,7 +301,7 @@ function ClaimSheet({ claimId, onClose }: { claimId: string; onClose: () => void
               <Fact label="Disallowed">{inr(claim.data.disallowedAmount)}</Fact>
               <Fact label="Disease group (ICD-10 chapter)">{claim.data.icdChapter}</Fact>
               <Fact label="Bank account">{claim.data.bankAccount ?? '—'}</Fact>
-              {canProcess ? (
+              {canReview ? (
                 <>
                   <Fact label="Diagnosis">{claim.data.diagnosis ?? '—'}</Fact>
                   <Fact label="ICD code">{claim.data.icdCode ?? '—'}</Fact>
@@ -312,7 +312,7 @@ function ClaimSheet({ claimId, onClose }: { claimId: string; onClose: () => void
                 <BoardCell claim={claim.data} />
               </Fact>
             </dl>
-            {canProcess ? <LinkForm claim={claim.data} /> : null}
+            {canReview ? <LinkForm claim={claim.data} /> : null}
             <section className="grid gap-2">
               <h3 className="text-sm font-semibold">History</h3>
               {history.data ? (

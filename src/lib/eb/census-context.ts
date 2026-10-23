@@ -63,7 +63,8 @@ export function censusMemberOf(member: EbMember): EbCensusMember {
     name: member.name,
     nameKey: nameKeyOf(member.name),
     gender: member.gender,
-    dateOfBirth: member.dateOfBirth,
+    // Withheld (null) only from users who cannot edit the census, so it never reaches validation.
+    dateOfBirth: member.dateOfBirth ?? '',
     relationship: member.relationship,
     dateOfJoining: member.dateOfJoining,
     sumInsured: member.sumInsured,

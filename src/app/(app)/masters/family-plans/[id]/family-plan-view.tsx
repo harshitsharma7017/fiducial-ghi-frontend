@@ -44,7 +44,7 @@ import {
 /** A family plan with every version (Requirement 12); changes need masters.manage (24.1). */
 export function FamilyPlanView({ id }: { id: string }) {
   const plan = useQuery(familyPlanQuery(id));
-  const canManage = usePermission('masters.manage');
+  const canManage = usePermission('family_plans.manage');
   if (plan.isPending) return <LoadingState label="Loading the plan" />;
   if (plan.isError) {
     if (plan.error instanceof ApiError && plan.error.status === 404)

@@ -2,7 +2,7 @@ import { cleanup, render, screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { TooltipProvider } from '@/components/ui/tooltip';
-import type { Role } from '@/shared';
+import { legacyPermissionsOf, type LegacyRole as Role } from '@/shared';
 import { SidebarNav } from './sidebar-nav';
 
 const navigation = vi.hoisted(() => ({ pathname: '/ghi', search: '' }));
@@ -14,7 +14,10 @@ vi.mock('next/navigation', () => ({
 function renderNav(roles: readonly Role[] | undefined, collapsed = false) {
   render(
     <TooltipProvider>
-      <SidebarNav roles={roles} collapsed={collapsed} />
+      <SidebarNav
+        permissions={roles ? legacyPermissionsOf(roles) : undefined}
+        collapsed={collapsed}
+      />
     </TooltipProvider>,
   );
   return screen.getByRole('navigation', { name: 'Main' });
@@ -95,11 +98,14 @@ describe('SidebarNav', () => {
     }
   });
 
-  it('shows only what every role may see while the user loads', () => {
+  it('shows no item while the user loads: roles are configurable, so nothing is open to all', () => {
     const nav = renderNav(undefined);
-    expect(within(nav).queryByRole('heading', { name: 'Admin' })).not.toBeInTheDocument();
-    expect(within(nav).queryByRole('link', { name: 'Claims' })).not.toBeInTheDocument();
-    expect(within(nav).getByRole('link', { name: GMC })).toBeInTheDocument();
+    expect(within(nav).queryAllByRole('link')).toHaveLength(0);
+  });
+
+  it('gives admins the Roles page', () => {
+    const nav = renderNav(['ADMIN']);
+    expect(within(nav).getByRole('link', { name: 'Roles' })).toHaveAttribute('href', '/roles');
   });
 
   it('shows each label in a tooltip on keyboard focus in the rail', async () => {

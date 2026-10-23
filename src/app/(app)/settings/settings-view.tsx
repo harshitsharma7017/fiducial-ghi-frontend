@@ -7,7 +7,7 @@ import { SystemStatusCard } from '@/components/settings/system-status-card';
 import { AccessDeniedState, DemoModeState, LoadingState } from '@/components/states';
 import { useCurrentUser } from '@/hooks/use-current-user';
 import { useDemoMode } from '@/hooks/use-demo-mode';
-import { can } from '@/shared';
+import { hasPermission } from '@/shared';
 
 /**
  * Needs settings.view (Admin). Users without it, and demo mode, never send the status and master
@@ -20,8 +20,10 @@ export function SettingsView() {
 
   let content;
   if (!me.data) content = <LoadingState label="Loading your account…" />;
-  else if (!can(me.data.roles, 'settings.view'))
-    content = <AccessDeniedState description="Only admins can open Settings." />;
+  else if (!hasPermission(me.data.permissions, 'settings.view'))
+    content = (
+      <AccessDeniedState description="You need the View settings permission (settings.view)." />
+    );
   else if (demoMode) content = <DemoModeState />;
   else
     content = (

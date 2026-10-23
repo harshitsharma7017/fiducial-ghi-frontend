@@ -72,6 +72,7 @@ describe('apiFetch', () => {
       email: 'a@example.com',
       name: 'A',
       roles: ['ADMIN'],
+      roleNames: ['Admin'],
       active: true,
       lockedUntil: null,
       lastLoginAt: null,

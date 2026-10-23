@@ -51,7 +51,7 @@ export function EmployeeDialog({
   const resolving = employee.unresolved;
   const [name, setName] = useState(resolving ? '' : employee.name);
   const [gender, setGender] = useState<GhiGender | ''>(resolving ? '' : employee.gender);
-  const [dateOfBirth, setDateOfBirth] = useState(resolving ? '' : employee.dateOfBirth);
+  const [dateOfBirth, setDateOfBirth] = useState(resolving ? '' : (employee.dateOfBirth ?? ''));
   const [reason, setReason] = useState('');
   const save = useMutation({
     mutationFn: () =>
@@ -117,7 +117,10 @@ export function EmployeeDialog({
                   <li key={variant.caseId} className="flex flex-wrap items-center gap-2">
                     <span>
                       {variant.reference} ({EB_PRODUCT_LABELS[variant.product]}): {variant.name},{' '}
-                      {GHI_GENDER_LABELS[variant.gender]}, {formatDate(variant.dateOfBirth)}
+                      {GHI_GENDER_LABELS[variant.gender]},{' '}
+                      {variant.dateOfBirth
+                        ? formatDate(variant.dateOfBirth)
+                        : 'date of birth hidden'}
                     </span>
                     <Button
                       type="button"
@@ -126,7 +129,7 @@ export function EmployeeDialog({
                       onClick={() => {
                         setName(variant.name);
                         setGender(variant.gender);
-                        setDateOfBirth(variant.dateOfBirth);
+                        setDateOfBirth(variant.dateOfBirth ?? '');
                       }}
                     >
                       Use these

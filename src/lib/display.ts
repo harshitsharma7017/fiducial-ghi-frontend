@@ -1,4 +1,4 @@
-import { RISK_TYPE_LABELS, ROLE_LABELS, formatRate, type RiskType, type User } from '@/shared';
+import { RISK_TYPE_LABELS, formatRate, type RiskType, type User } from '@/shared';
 
 /** A per-mille rate for display, or an em dash when the master has no value. */
 export function displayRate(value: string | null | undefined): string {
@@ -9,9 +9,9 @@ export function riskTypeLabel(value: RiskType | null): string {
   return value ? RISK_TYPE_LABELS[value] : 'Blank';
 }
 
-/** The user's roles for display, for example "Admin, Relationship Manager". */
-export function rolesLabel(user: Pick<User, 'roles'>): string {
-  return user.roles.map((role) => ROLE_LABELS[role]).join(', ');
+/** The user's roles for display, for example "Admin, Relationship Manager" (names from the API). */
+export function rolesLabel(user: Pick<User, 'roleNames'>): string {
+  return user.roleNames.join(', ');
 }
 
 /** Up to two initials for an avatar: "Asha Menon" gives "AM", "Administrator" gives "A". */

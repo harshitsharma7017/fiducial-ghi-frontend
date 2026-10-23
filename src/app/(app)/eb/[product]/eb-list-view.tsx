@@ -24,13 +24,14 @@ import { useDebouncedValue } from '@/hooks/use-debounced-value';
 import { usePermission } from '@/hooks/use-permission';
 import { ebCasesQuery, type EbListFilters } from '@/lib/eb/api';
 import {
+  casePermission,
   EB_PRODUCT_LABELS,
   EB_STAGES,
-  GHI_CASE_TYPES,
-  GHI_CASE_TYPE_LABELS,
-  GHI_STAGE_LABELS,
   ebCasePath,
   formatDate,
+  GHI_CASE_TYPE_LABELS,
+  GHI_CASE_TYPES,
+  GHI_STAGE_LABELS,
   type EbRoutedProduct,
   type GhiCaseType,
   type GhiStage,
@@ -43,7 +44,7 @@ const DESCRIPTION: Record<EbRoutedProduct, string> = {
 
 /** The cases of one product, most recently changed first (Requirement 2.3). */
 export function EbListView({ product }: { product: EbRoutedProduct }) {
-  const canCreate = usePermission('proposals.create');
+  const canCreate = usePermission(casePermission(product, 'create'));
   return (
     <>
       <PageHeader

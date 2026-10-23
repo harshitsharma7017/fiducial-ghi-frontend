@@ -43,7 +43,7 @@ export function InsurersView() {
   const [search, setSearch] = useState('');
   const [status, setStatus] = useState<StatusFilter>('true');
   const q = useDebouncedValue(search.trim(), 300);
-  const canManage = usePermission('masters.manage');
+  const canManage = usePermission('insurers.manage');
   const columns = canManage ? 5 : 4;
 
   const insurers = useInfiniteQuery({

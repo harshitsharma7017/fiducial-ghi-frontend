@@ -2,7 +2,7 @@
 
 import type { RefObject } from 'react';
 import { Sheet, SheetContent, SheetDescription, SheetTitle } from '@/components/ui/sheet';
-import type { User } from '@/shared';
+import type { CurrentUser } from '@/shared';
 import { SidebarBrand } from './sidebar/sidebar';
 import { SidebarNav } from './sidebar/sidebar-nav';
 import { SidebarUser } from './sidebar/sidebar-user';
@@ -21,7 +21,7 @@ export function MobileNav({
   open: boolean;
   onOpenChange: (open: boolean) => void;
   returnFocusRef: RefObject<HTMLButtonElement | null>;
-  user: User | undefined;
+  user: CurrentUser | undefined;
 }) {
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
@@ -37,7 +37,7 @@ export function MobileNav({
         <SheetTitle className="sr-only">Navigation</SheetTitle>
         <SheetDescription className="sr-only">Main navigation</SheetDescription>
         <SidebarBrand collapsed={false} />
-        <SidebarNav roles={user?.roles} onNavigate={() => onOpenChange(false)} />
+        <SidebarNav permissions={user?.permissions} onNavigate={() => onOpenChange(false)} />
         <SidebarUser user={user} collapsed={false} />
       </SheetContent>
     </Sheet>

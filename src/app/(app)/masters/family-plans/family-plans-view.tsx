@@ -32,7 +32,7 @@ const COLUMNS = 5;
  */
 export function FamilyPlansView() {
   const [product, setProduct] = useState<EbProduct>('GMC');
-  const canManage = usePermission('masters.manage');
+  const canManage = usePermission('family_plans.manage');
   const plans = useQuery(familyPlansQuery(product));
   const items = plans.data?.items ?? [];
 

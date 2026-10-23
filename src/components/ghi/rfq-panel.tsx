@@ -73,9 +73,9 @@ export function RfqPanel({ record }: { record: WorkflowCase }) {
 }
 
 function VersionCard({ record, state }: { record: WorkflowCase; state: GhiRfqState }) {
-  const canEdit = usePermission('proposals.edit');
-  const canApprove = usePermission('proposals.approve');
-  const canExport = usePermission('proposals.export');
+  const canEdit = usePermission('gmc.edit');
+  const canApprove = usePermission('gmc.approve');
+  const canExport = usePermission('gmc.export');
   const [comment, setComment] = useState('');
   const [previewing, setPreviewing] = useState(false);
   const open = record.stage !== 'CLOSED';

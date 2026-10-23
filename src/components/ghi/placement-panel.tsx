@@ -27,8 +27,8 @@ import { DownloadButton, Fact, FilePicker, inr, rupees } from './ghi-ui';
  * policy the insurer issued: number, copy and renewal date (G7).
  */
 export function PlacementPanel({ record }: { record: GhiCaseRecord }) {
-  const canExport = usePermission('proposals.export');
-  const canEdit = usePermission('proposals.edit');
+  const canExport = usePermission('gmc.export');
+  const canEdit = usePermission('gmc.edit');
   const placement = useQuery(ghiPlacementQuery(record.id));
   if (placement.isPending) return <LoadingState label="Loading the placement" />;
   if (placement.isError)

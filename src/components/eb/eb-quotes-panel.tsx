@@ -33,14 +33,15 @@ import { ApiError, apiFetch } from '@/lib/api-client';
 import { caseApi, refreshGhiCase } from '@/lib/api/ghi';
 import { ebQuotesQuery } from '@/lib/eb/api';
 import {
-  COVER_OFFERS,
+  casePermission,
   COVER_OFFER_LABELS,
+  COVER_OFFERS,
   EbQuoteSchema,
-  GPA_COVERS,
-  GPA_COVER_LABELS,
   emptyGpaQuoteTerms,
   emptyGtliQuoteTerms,
   formatDateTime,
+  GPA_COVER_LABELS,
+  GPA_COVERS,
   type CoverOffer,
   type EbCaseRecord,
   type EbQuote,
@@ -56,7 +57,7 @@ import { Field } from './eb-ui';
  * revision with its reason. GST and totals are the API's (7.2); the rate stated is kept as text.
  */
 export function EbQuotesPanel({ record }: { record: EbCaseRecord }) {
-  const canEdit = usePermission('proposals.edit');
+  const canEdit = usePermission(casePermission(record.product, 'edit'));
   const quotes = useQuery(ebQuotesQuery(record.product, record.id));
   const [editing, setEditing] = useState<EbQuote | 'new' | null>(null);
   const queryClient = useQueryClient();

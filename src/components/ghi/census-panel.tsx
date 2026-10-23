@@ -50,7 +50,7 @@ import { MemberDialog } from './member-dialog';
 
 /** The census (G3) with its summary (G4), worked out by the API after every change. */
 export function CensusPanel({ record }: { record: GhiCaseRecord }) {
-  const canEdit = usePermission('proposals.edit');
+  const canEdit = usePermission('gmc.edit');
   const writable = canEdit && !record.locked && record.stage !== 'CLOSED';
   const summary = useQuery(ghiSummaryQuery(record.id));
   const issues = useQuery(ghiCensusIssuesQuery(record.id));
@@ -350,7 +350,13 @@ function MembersCard({ record, writable }: { record: GhiCaseRecord; writable: bo
                       <TableCell>{member.name}</TableCell>
                       <TableCell>{GHI_RELATIONSHIP_LABELS[member.relationship]}</TableCell>
                       <TableCell>{GHI_GENDER_LABELS[member.gender]}</TableCell>
-                      <TableCell className="tabular">{formatDate(member.dateOfBirth)}</TableCell>
+                      <TableCell className="tabular">
+                        {member.dateOfBirth ? (
+                          formatDate(member.dateOfBirth)
+                        ) : (
+                          <span className="text-muted-foreground">Hidden</span>
+                        )}
+                      </TableCell>
                       <TableCell className="text-right tabular">{member.age}</TableCell>
                       <TableCell className="tabular">
                         {member.dateOfJoining ? formatDate(member.dateOfJoining) : '—'}

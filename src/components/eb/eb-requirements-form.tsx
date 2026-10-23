@@ -22,28 +22,29 @@ import { usePermission } from '@/hooks/use-permission';
 import { ApiError, apiFetch } from '@/lib/api-client';
 import { caseApi, useGhiMutation } from '@/lib/api/ghi';
 import {
-  COVER_CHOICES,
+  casePermission,
   COVER_CHOICE_LABELS,
+  COVER_CHOICES,
   DEPENDANT_BASES,
   DEPENDANT_BASIS_LABELS,
   EbCaseRecordSchema,
-  GHI_AGE_GROUPS,
   GHI_AGE_GROUP_LABELS,
+  GHI_AGE_GROUPS,
   GHI_CLAIM_YEARS,
-  GPA_COVERS,
   GPA_COVER_LABELS,
+  GPA_COVERS,
   GpaRequirementsInputSchema,
   GtliRequirementsInputSchema,
-  NOMINEE_REQUIREMENTS,
   NOMINEE_REQUIREMENT_LABELS,
+  NOMINEE_REQUIREMENTS,
   planHasDependants,
   planRelationships,
-  type NomineeRequirement,
   type CoverChoice,
   type DependantBasisKind,
   type EbCaseRecord,
   type GpaRequirementsFormValues,
   type GtliRequirementsFormValues,
+  type NomineeRequirement,
 } from '@/shared';
 import { AwaitingNote } from './awaiting-confirmation';
 import { RelationshipRulesEditor } from './relationship-rules-editor';
@@ -78,7 +79,7 @@ function errorsOf(
 }
 
 export function EbRequirementsForm({ record }: { record: EbCaseRecord }) {
-  const canEdit = usePermission('proposals.edit');
+  const canEdit = usePermission(casePermission(record.product, 'edit'));
   const locked = record.locked || record.stage === 'CLOSED' || record.placed;
   const disabled = !canEdit || locked;
   const gpa = record.product === 'GPA';

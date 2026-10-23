@@ -38,7 +38,7 @@ const STATUS_VARIANT = {
 
 /** The QCR (G6): prepared from the latest final quotes, approved, sent and decided by the client. */
 export function QcrPanel({ record }: { record: GhiCaseRecord }) {
-  const canEdit = usePermission('proposals.edit');
+  const canEdit = usePermission('gmc.edit');
   const qcrs = useQuery(ghiQcrsQuery(record.id));
   const [editing, setEditing] = useState(false);
   if (qcrs.isPending) return <LoadingState label="Loading the QCR" />;
@@ -247,10 +247,10 @@ function QcrCard({
   mailEnabled: boolean;
   onEdit?: () => void;
 }) {
-  const canEdit = usePermission('proposals.edit');
-  const canApprove = usePermission('proposals.approve');
-  const canSend = usePermission('proposals.send');
-  const canExport = usePermission('proposals.export');
+  const canEdit = usePermission('gmc.edit');
+  const canApprove = usePermission('gmc.approve');
+  const canSend = usePermission('gmc.send');
+  const canExport = usePermission('gmc.export');
   const [comment, setComment] = useState('');
   const [dialog, setDialog] = useState<'send' | 'decision' | null>(null);
   const open = record.stage !== 'CLOSED' && record.finalQcr === null;

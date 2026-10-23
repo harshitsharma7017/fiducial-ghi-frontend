@@ -7,7 +7,7 @@ import { AccessDeniedState } from '@/components/states';
 import { usePermission } from '@/hooks/use-permission';
 
 export function NewClaimView() {
-  const canProcess = usePermission('claims.process');
+  const canProcess = usePermission('claims.create');
   return (
     <>
       <PageHeader

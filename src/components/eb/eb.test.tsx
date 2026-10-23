@@ -13,7 +13,8 @@ import {
   type EbCaseRecord,
   type EbPlanAssignment,
   type EbPlacementState,
-  type Role,
+  type LegacyRole as Role,
+  legacyPermissionsOf,
 } from '@/shared';
 import { AwaitingConfirmationBadge, ProvisionalNotice } from './awaiting-confirmation';
 import { EbPlacementPanel } from './eb-placement-panel';
@@ -25,7 +26,16 @@ import { ProductChoice } from './product-choice';
 
 const roles = vi.hoisted(() => ({ current: ['ACCOUNT_MANAGER'] as Role[] }));
 vi.mock('@/hooks/use-current-user', () => ({
-  useCurrentUser: () => ({ data: { id: 'b'.repeat(24), name: 'Asha Rao', roles: roles.current } }),
+  useCurrentUser: () => ({
+    data: {
+      id: 'b'.repeat(24),
+      name: 'Asha Rao',
+      roles: roles.current,
+      roleNames: [],
+      // As /auth/me gives them for the migrated legacy roles.
+      permissions: legacyPermissionsOf(roles.current),
+    },
+  }),
 }));
 const push = vi.hoisted(() => vi.fn());
 vi.mock('next/navigation', () => ({ useRouter: () => ({ push }) }));

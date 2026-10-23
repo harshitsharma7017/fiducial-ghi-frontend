@@ -57,7 +57,7 @@ export function termsFromRequirements(requirements: GhiRequirements): GhiQuoteTe
 
 /** Insurers' quotes (G6): drafts, recorded versions and revisions, with deviations from the RFQ. */
 export function QuotesPanel({ record }: { record: GhiCaseRecord }) {
-  const canEdit = usePermission('proposals.edit');
+  const canEdit = usePermission('gmc.edit');
   const quotes = useQuery(ghiQuotesQuery(record.id));
   const [editing, setEditing] = useState<{
     insurer: GhiCaseInsurer;

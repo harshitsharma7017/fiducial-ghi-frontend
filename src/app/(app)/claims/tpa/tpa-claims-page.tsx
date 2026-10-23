@@ -9,8 +9,8 @@ import { Button } from '@/components/ui/button';
 import { usePermission } from '@/hooks/use-permission';
 
 export function TpaClaimsPage() {
-  const canProcess = usePermission('claims.process');
-  const canAdmin = usePermission('claims.admin');
+  const canImport = usePermission('claims.tpa_import');
+  const canConfigure = usePermission('claims.tpa_manage');
   return (
     <>
       <PageHeader
@@ -18,7 +18,7 @@ export function TpaClaimsPage() {
         description="Claims imported from TPA files, by policy. Diagnosis details are shown only to staff who process claims."
         actions={
           <>
-            {canAdmin ? (
+            {canConfigure ? (
               <Button asChild variant="outline">
                 <Link href="/claims/tpa/formats">
                   <Settings2 aria-hidden="true" />
@@ -26,7 +26,7 @@ export function TpaClaimsPage() {
                 </Link>
               </Button>
             ) : null}
-            {canProcess ? (
+            {canImport ? (
               <Button asChild>
                 <Link href="/claims/tpa/import">
                   <FileUp aria-hidden="true" />

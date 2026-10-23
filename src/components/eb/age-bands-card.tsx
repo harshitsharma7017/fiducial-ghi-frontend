@@ -21,10 +21,11 @@ import { apiFetch } from '@/lib/api-client';
 import { AnyRecordSchema, caseApi, useGhiMutation } from '@/lib/api/ghi';
 import { ageBandSetsQuery } from '@/lib/eb/api';
 import {
+  bandsRangeText,
+  casePermission,
+  formatDateTime,
   STANDARD_AGE_BANDS,
   STANDARD_AGE_BANDS_NAME,
-  bandsRangeText,
-  formatDateTime,
   type AgeBandSelection,
   type EbProduct,
 } from '@/shared';
@@ -46,7 +47,7 @@ export function AgeBandsCard({
   /** The case is open, the RFQ not sent and the case not placed. */
   editable: boolean;
 }) {
-  const canEdit = usePermission('proposals.edit');
+  const canEdit = usePermission(casePermission(product, 'edit'));
   const [open, setOpen] = useState(false);
   const sets = useQuery(ageBandSetsQuery());
   const master = selection

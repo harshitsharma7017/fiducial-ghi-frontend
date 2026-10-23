@@ -89,7 +89,7 @@ function usePayments(record: PaymentCase) {
  * premium of the client's decision (Requirement 10).
  */
 export function PaymentsPanel({ record }: { record: PaymentCase }) {
-  const canEdit = usePermission('proposals.edit');
+  const canEdit = usePermission('gmc.edit');
   const payments = usePayments(record);
   const [editing, setEditing] = useState<GhiPayment | 'new' | null>(null);
   const gmc = record.product === 'GMC';

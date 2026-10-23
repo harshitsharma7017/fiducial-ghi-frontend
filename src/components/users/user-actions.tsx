@@ -19,9 +19,9 @@ import { toast } from '@/hooks/use-toast';
 import { apiFetch } from '@/lib/api-client';
 import { queryKeys } from '@/lib/query-keys';
 import {
+  ADMIN_ROLE_KEY,
   UserRolesSchema,
   UserSchema,
-  type Role,
   type UpdateUserRequest,
   type User,
 } from '@/shared';
@@ -47,7 +47,7 @@ function useUpdateUser(user: User, onDone: () => void) {
 
 export function EditRolesDialog({ user, isSelf }: { user: User; isSelf: boolean }) {
   const [open, setOpen] = useState(false);
-  const [roles, setRoles] = useState<Role[]>(user.roles);
+  const [roles, setRoles] = useState<string[]>(user.roles);
   const [validation, setValidation] = useState<string | undefined>();
   const update = useUpdateUser(user, () => setOpen(false));
 
@@ -69,7 +69,7 @@ export function EditRolesDialog({ user, isSelf }: { user: User; isSelf: boolean 
           Roles
         </Button>
       </DialogTrigger>
-      <DialogContent>
+      <DialogContent className="max-h-[90vh] overflow-y-auto sm:max-w-lg">
         <DialogHeader>
           <DialogTitle>Change roles</DialogTitle>
           <DialogDescription>
@@ -100,8 +100,8 @@ export function EditRolesDialog({ user, isSelf }: { user: User; isSelf: boolean 
               setRoles(next);
               setValidation(undefined);
             }}
-            // You cannot remove your own Admin role.
-            disabledRoles={isSelf && user.roles.includes('ADMIN') ? ['ADMIN'] : []}
+            // You cannot remove your own Administrator role.
+            disabledRoles={isSelf && user.roles.includes(ADMIN_ROLE_KEY) ? [ADMIN_ROLE_KEY] : []}
             error={validation}
           />
           <DialogFooter>

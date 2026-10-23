@@ -21,13 +21,14 @@ import { usePermission } from '@/hooks/use-permission';
 import { caseApi } from '@/lib/api/ghi';
 import { rfqVersionSummaryQuery, selectionSummaryQuery } from '@/lib/eb/api';
 import {
-  GHI_GENDERS,
-  GHI_GENDER_LABELS,
-  GHI_RELATIONSHIP_LABELS,
-  SELECTION_MEASURE_LABELS,
+  casePermission,
   formatDate,
   formatDateTime,
   formatIndianNumber,
+  GHI_GENDER_LABELS,
+  GHI_GENDERS,
+  GHI_RELATIONSHIP_LABELS,
+  SELECTION_MEASURE_LABELS,
   type EbProduct,
   type GhiRfqVersion,
   type RfqSelectionSummaryResponse,
@@ -51,7 +52,7 @@ export function SelectionSummaryCard({
   product: EbProduct;
   versions: readonly GhiRfqVersion[];
 }) {
-  const canExport = usePermission('proposals.export');
+  const canExport = usePermission(casePermission(product, 'export'));
   const stored = versions.filter((version) => version.hasSelectionSummary);
   const [source, setSource] = useState<string>('CURRENT');
   const current = useQuery(selectionSummaryQuery(product, caseId));

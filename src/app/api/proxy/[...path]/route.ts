@@ -7,7 +7,7 @@ import {
   isSameOrigin,
   upstreamUnavailable,
 } from '@/lib/server/bff';
-import { demoUserForToken, isMockApi } from '@/lib/server/mock-mode';
+import { demoCurrentUser, demoUserForToken, isMockApi } from '@/lib/server/mock-mode';
 import { isAllowedProxyPath } from '@/lib/server/proxy-paths';
 import { SESSION_COOKIE, clearedSessionCookieOptions } from '@/lib/session';
 import { ERROR_CODES } from '@/shared';
@@ -25,7 +25,7 @@ function mockResponse(method: string, path: string[], token: string): Response {
     return response;
   }
   if (method === 'GET' && path.length === 2 && path[0] === 'auth' && path[1] === 'me') {
-    return NextResponse.json(user, { headers: { 'Cache-Control': 'no-store' } });
+    return NextResponse.json(demoCurrentUser(user), { headers: { 'Cache-Control': 'no-store' } });
   }
   return errorResponse(503, DEMO_MODE_CODE, DEMO_MODE_MESSAGE);
 }

@@ -2,12 +2,19 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { fireEvent, render, screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import type { Role } from '@/shared';
+import { legacyPermissionsOf, type LegacyRole as Role } from '@/shared';
 import { EmailTemplatesView } from './email-templates-view';
 
 const roles = vi.hoisted(() => ({ current: ['ADMIN'] as Role[] }));
 vi.mock('@/hooks/use-current-user', () => ({
-  useCurrentUser: () => ({ data: { name: 'Asha Rao', roles: roles.current } }),
+  useCurrentUser: () => ({
+    data: {
+      name: 'Asha Rao',
+      roles: roles.current,
+      roleNames: [],
+      permissions: legacyPermissionsOf(roles.current),
+    },
+  }),
 }));
 
 const AT = '2026-10-07T04:00:00.000Z';

@@ -13,7 +13,7 @@ import { usePermission } from '@/hooks/use-permission';
 import { apiFetch } from '@/lib/api-client';
 import { AnyRecordSchema, caseApi, refreshGhiCase } from '@/lib/api/ghi';
 import { ebPlacementQuery } from '@/lib/eb/api';
-import { formatDate, formatDateTime, sumMoney, type EbCaseRecord } from '@/shared';
+import { casePermission, formatDate, formatDateTime, sumMoney, type EbCaseRecord } from '@/shared';
 import { AwaitingNote } from './awaiting-confirmation';
 import { Field } from './eb-ui';
 
@@ -24,8 +24,8 @@ import { Field } from './eb-ui';
  */
 export function EbPlacementPanel({ record }: { record: EbCaseRecord }) {
   const queryClient = useQueryClient();
-  const canEdit = usePermission('proposals.edit');
-  const canExport = usePermission('proposals.export');
+  const canEdit = usePermission(casePermission(record.product, 'edit'));
+  const canExport = usePermission(casePermission(record.product, 'export'));
   const placement = useQuery(ebPlacementQuery(record.product, record.id));
   const [policyNumber, setPolicyNumber] = useState('');
   const [policyStart, setPolicyStart] = useState(record.policyStart ?? '');

@@ -514,7 +514,7 @@ function DetailsTable({
 
 /** Endorsement premiums (additions and deletions) for the ICR; voided, never deleted. */
 function PremiumCard({ caseId }: { caseId: string }) {
-  const canEdit = usePermission('proposals.edit');
+  const canEdit = usePermission('claims_analysis.manage_premiums');
   const list = useQuery(premiumAdjustmentsQuery(caseId));
   const [draft, setDraft] = useState({
     kind: 'ADDITION' as 'ADDITION' | 'DELETION',

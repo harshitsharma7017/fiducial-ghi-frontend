@@ -6,7 +6,7 @@ import { useId, type ReactElement } from 'react';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 import { cn } from '@/lib/utils';
-import type { Role } from '@/shared';
+import type { Permission } from '@/shared';
 import { isActiveItem, visibleGroups, type NavItem } from '../nav-config';
 
 const ITEM_CLASS =
@@ -99,23 +99,22 @@ function LinkItem({
 }
 
 /**
- * The main navigation: only the items the user's roles may see (visibleGroups). `roles` is
- * undefined while the user loads: the items every role may see show at once, and a skeleton
- * holds the place of the rest.
+ * The main navigation: only the items the user's active roles allow (visibleGroups).
+ * `permissions` is undefined while the user loads, and a skeleton holds the place of the items.
  */
 export function SidebarNav({
-  roles,
+  permissions,
   collapsed = false,
   onNavigate,
 }: {
-  roles: readonly Role[] | undefined;
+  permissions: readonly Permission[] | undefined;
   collapsed?: boolean;
   onNavigate?: () => void;
 }) {
   const pathname = usePathname();
   const search = useSearchParams();
   const idPrefix = useId();
-  const groups = visibleGroups(roles);
+  const groups = visibleGroups(permissions);
 
   return (
     <nav
@@ -161,7 +160,7 @@ export function SidebarNav({
           </div>
         );
       })}
-      {roles ? null : (
+      {permissions ? null : (
         <div aria-hidden="true" className="grid gap-2 px-2">
           <Skeleton className={cn('h-3 bg-sidebar-active', collapsed ? 'w-full' : 'w-16')} />
           <Skeleton className="h-7 w-full bg-sidebar-active" />

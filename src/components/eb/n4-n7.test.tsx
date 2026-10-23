@@ -6,7 +6,12 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { AgeBandSetSheet } from '@/components/age-bands/age-band-set-sheet';
 import { CASE_ID } from '@/components/ghi/ghi-fixtures.test-utils';
 import { json, urlOf } from '@/components/proposals/rfq/rfq-fixtures.test-utils';
-import { buildSelectionSummary, type RfqSelectionSummaryResponse, type Role } from '@/shared';
+import {
+  buildSelectionSummary,
+  type RfqSelectionSummaryResponse,
+  type LegacyRole as Role,
+  legacyPermissionsOf,
+} from '@/shared';
 import { AgeBandsCard } from './age-bands-card';
 import { RelationshipRulesEditor, type RuleValue } from './relationship-rules-editor';
 import { SelectionSummaryCard } from './selection-summary-card';
@@ -16,7 +21,16 @@ import { SelectionSummaryCard } from './selection-summary-card';
 
 const roles = vi.hoisted(() => ({ current: ['ADMIN'] as Role[] }));
 vi.mock('@/hooks/use-current-user', () => ({
-  useCurrentUser: () => ({ data: { id: 'b'.repeat(24), name: 'Asha Rao', roles: roles.current } }),
+  useCurrentUser: () => ({
+    data: {
+      id: 'b'.repeat(24),
+      name: 'Asha Rao',
+      roles: roles.current,
+      roleNames: [],
+      // As /auth/me gives them for the migrated legacy roles.
+      permissions: legacyPermissionsOf(roles.current),
+    },
+  }),
 }));
 vi.mock('next/navigation', () => ({ useRouter: () => ({ push: vi.fn() }) }));
 

@@ -16,8 +16,9 @@ import { cn } from '@/lib/utils';
 
 /** Group health claims (C1): the board of statuses, or the table, with search and company. */
 export function ClaimsView({ initialView }: { initialView: 'board' | 'table' }) {
-  const canProcess = usePermission('claims.process');
-  const canAdmin = usePermission('claims.admin');
+  const canCreate = usePermission('claims.create');
+  const canLinks = usePermission('claims.links');
+  const canSettings = usePermission('claims.settings');
   const [view, setView] = useState(initialView);
   const [text, setText] = useState('');
   const [clientId, setClientId] = useState('');
@@ -33,7 +34,7 @@ export function ClaimsView({ initialView }: { initialView: 'board' | 'table' }) 
         description="Group health claims: drag a card to its next stage, with a remark; the claimant and HR are emailed."
         actions={
           <>
-            {canAdmin ? (
+            {canSettings ? (
               <Button asChild variant="outline">
                 <Link href="/claims/settings">
                   <Settings aria-hidden="true" />
@@ -47,21 +48,21 @@ export function ClaimsView({ initialView }: { initialView: 'board' | 'table' }) 
                 TPA claims
               </Link>
             </Button>
-            {canProcess ? (
-              <>
-                <Button asChild variant="outline">
-                  <Link href="/claims/links">
-                    <Link2 aria-hidden="true" />
-                    Submission links
-                  </Link>
-                </Button>
-                <Button asChild>
-                  <Link href="/claims/new">
-                    <Plus aria-hidden="true" />
-                    New claim
-                  </Link>
-                </Button>
-              </>
+            {canLinks ? (
+              <Button asChild variant="outline">
+                <Link href="/claims/links">
+                  <Link2 aria-hidden="true" />
+                  Submission links
+                </Link>
+              </Button>
+            ) : null}
+            {canCreate ? (
+              <Button asChild>
+                <Link href="/claims/new">
+                  <Plus aria-hidden="true" />
+                  New claim
+                </Link>
+              </Button>
             ) : null}
           </>
         }

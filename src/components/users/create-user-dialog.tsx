@@ -86,7 +86,7 @@ export function CreateUserDialog() {
           Create user
         </Button>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-lg">
+      <DialogContent className="max-h-[90vh] overflow-y-auto sm:max-w-lg">
         <DialogHeader>
           <DialogTitle>Create user</DialogTitle>
           <DialogDescription>The user signs in with this email and password.</DialogDescription>

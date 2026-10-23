@@ -55,7 +55,7 @@ function valuesOf(record: GhiCaseRecord): GhiRequirementsFormValues {
  * claims and the census age limits. Locked once the RFQ has gone to an insurer.
  */
 export function RequirementsForm({ record }: { record: GhiCaseRecord }) {
-  const canEdit = usePermission('proposals.edit');
+  const canEdit = usePermission('gmc.edit');
   const locked = record.locked || record.stage === 'CLOSED';
   const disabled = !canEdit || locked;
   const form = useForm<GhiRequirementsFormValues, unknown, GhiRequirementsInput>({

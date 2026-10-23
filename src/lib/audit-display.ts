@@ -1,13 +1,12 @@
 import {
   AUDIT_ENTITIES,
   AUDIT_KINDS,
-  ROLES,
-  ROLE_LABELS,
   formatDateTime,
+  isLegacyRole,
+  ROLE_LABELS,
   type AuditEntity,
   type AuditKind,
   type AuditLogEntry,
-  type Role,
 } from '@/shared';
 
 /** The audit log's filters, kept in the page URL so a record's history can be linked. */
@@ -101,10 +100,6 @@ const SIGN_IN_REASONS: Readonly<Record<string, string>> = {
 
 const ISO_DATE_TIME = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(\.\d+)?Z$/;
 
-function isRole(value: unknown): value is Role {
-  return typeof value === 'string' && (ROLES as readonly string[]).includes(value);
-}
-
 /**
  * A stored value as text: date-times in IST, roles by their labels, Yes or No, lists joined
  * with commas (semicolons between records such as contacts), and an em dash for no value.
@@ -112,7 +107,8 @@ function isRole(value: unknown): value is Role {
 export function formatAuditValue(field: string, value: unknown): string {
   if (value === null || value === undefined || value === '') return '—';
   if (field === 'roles' && Array.isArray(value)) {
-    return value.map((role) => (isRole(role) ? ROLE_LABELS[role] : String(role))).join(', ');
+    // Legacy roles by their labels; custom roles by their key (the roles page names them).
+    return value.map((role) => (isLegacyRole(role) ? ROLE_LABELS[role] : String(role))).join(', ');
   }
   if (field === 'reason' && typeof value === 'string') return SIGN_IN_REASONS[value] ?? value;
   if (typeof value === 'boolean') return value ? 'Yes' : 'No';

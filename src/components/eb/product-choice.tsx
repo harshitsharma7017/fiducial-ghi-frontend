@@ -11,14 +11,17 @@ const HINTS: Record<EbProduct, string> = {
 export function ProductChoice({
   value,
   onChange,
+  products = EB_PRODUCTS,
 }: {
   value: EbProduct | null;
   onChange: (value: EbProduct) => void;
+  /** The products offered (those the user may create); every product by default. */
+  products?: readonly EbProduct[];
 }) {
   return (
     <fieldset className="mb-6 grid max-w-3xl gap-2 sm:grid-cols-3">
       <legend className="mb-2 text-sm font-medium">Product</legend>
-      {EB_PRODUCTS.map((product) => {
+      {products.map((product) => {
         const checked = value === product;
         return (
           <label

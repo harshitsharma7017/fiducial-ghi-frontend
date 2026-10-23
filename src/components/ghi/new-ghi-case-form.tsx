@@ -83,9 +83,13 @@ export function NewGhiCaseForm({ product = 'GMC' }: { product?: EbProduct }) {
     if (me.data && !form.getValues('ownerId')) form.setValue('ownerId', me.data.id);
   }, [me.data, form]);
   const owners = useQuery({
-    queryKey: ['proposals', 'owners'],
+    // Owners of this product's cases: staff whose roles may edit them.
+    queryKey: ['proposals', 'owners', product],
     queryFn: ({ signal }) =>
-      apiFetch('proposals/owners', { schema: ProposalOwnersResponseSchema, signal }),
+      apiFetch(`proposals/owners?product=${product}`, {
+        schema: ProposalOwnersResponseSchema,
+        signal,
+      }),
   });
   const create = useMutation({
     mutationFn: (body: CreateGhiCaseRequest) =>

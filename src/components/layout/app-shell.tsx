@@ -99,14 +99,14 @@ export function AppShell({
                 title="Could not load your account"
               />
             ) : (
-              <PageGate roles={user?.roles}>{children}</PageGate>
+              <PageGate permissions={user?.permissions}>{children}</PageGate>
             )}
           </main>
         </div>
         <CommandPalette
           open={paletteOpen}
           onOpenChange={setPaletteOpen}
-          roles={user?.roles}
+          permissions={user?.permissions}
           returnFocusRef={paletteReturnFocusRef}
         />
       </div>

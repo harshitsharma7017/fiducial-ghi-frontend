@@ -65,7 +65,7 @@ export function MemberDialog({
           employeeId: member.employeeId,
           name: member.name,
           gender: member.gender,
-          dateOfBirth: member.dateOfBirth,
+          dateOfBirth: member.dateOfBirth ?? '',
           relationship: member.relationship,
           dateOfJoining: member.dateOfJoining ?? '',
           sumInsured: member.sumInsured ?? '',

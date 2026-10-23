@@ -48,6 +48,7 @@ const kb = (size: number) => `${Math.max(1, Math.round(size / 1024)).toLocaleStr
 
 /** The claim's documents, opened through the proxy by staff who may view claims (each opening is logged). */
 export function ClaimDocuments({ claim }: { claim: ClaimDetail }) {
+  const canOpenDocuments = usePermission('claims.view_documents');
   const [kind, setKind] = useState<ClaimDocumentKind>(claim.missingDocuments[0] ?? 'OTHER');
   const input = useRef<HTMLInputElement>(null);
   const upload = useClaimMutation(
@@ -131,24 +132,27 @@ export function ClaimDocuments({ claim }: { claim: ClaimDetail }) {
                     {formatDateTime(doc.uploadedAt)}
                   </span>
                 </span>
-                <span className="ml-auto flex gap-1">
-                  <Button asChild variant="ghost" size="sm">
-                    <a
-                      href={claimDocumentHref(claim.id, doc.id, true)}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                    >
-                      <Eye aria-hidden="true" />
-                      View
-                    </a>
-                  </Button>
-                  <Button asChild variant="ghost" size="sm">
-                    <a href={claimDocumentHref(claim.id, doc.id)}>
-                      <Download aria-hidden="true" />
-                      Download
-                    </a>
-                  </Button>
-                </span>
+                {/* Medical documents: only with claims.view_documents (the API refuses others). */}
+                {canOpenDocuments ? (
+                  <span className="ml-auto flex gap-1">
+                    <Button asChild variant="ghost" size="sm">
+                      <a
+                        href={claimDocumentHref(claim.id, doc.id, true)}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        <Eye aria-hidden="true" />
+                        View
+                      </a>
+                    </Button>
+                    <Button asChild variant="ghost" size="sm">
+                      <a href={claimDocumentHref(claim.id, doc.id)}>
+                        <Download aria-hidden="true" />
+                        Download
+                      </a>
+                    </Button>
+                  </span>
+                ) : null}
               </li>
             ))}
           </ul>
@@ -171,7 +175,7 @@ const MAIL_VARIANT: Record<
 
 /** Every email the claim's moves owed: who, what, and where it stands, with a retry for failures. */
 export function ClaimEmails({ claim }: { claim: ClaimDetail }) {
-  const canProcess = usePermission('claims.process');
+  const canRetry = usePermission('claims.retry_notifications');
   const retry = useClaimMutation(
     (notificationId: string) =>
       apiFetch(`claims/${claim.id}/notifications/${notificationId}/retry`, {
@@ -220,7 +224,7 @@ export function ClaimEmails({ claim }: { claim: ClaimDetail }) {
                 <TableHead>Result</TableHead>
                 <TableHead className="text-right">Tries</TableHead>
                 <TableHead>Last try</TableHead>
-                {canProcess ? (
+                {canRetry ? (
                   <TableHead>
                     <span className="sr-only">Retry</span>
                   </TableHead>
@@ -255,7 +259,7 @@ export function ClaimEmails({ claim }: { claim: ClaimDetail }) {
                   <TableCell className="tabular">
                     {item.lastAttemptAt ? formatDateTime(item.lastAttemptAt) : '—'}
                   </TableCell>
-                  {canProcess ? (
+                  {canRetry ? (
                     <TableCell>
                       {item.status === 'FAILED' ? (
                         <Button

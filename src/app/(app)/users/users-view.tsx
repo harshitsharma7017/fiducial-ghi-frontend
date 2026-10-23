@@ -24,11 +24,10 @@ import { useCurrentUser } from '@/hooks/use-current-user';
 import { apiFetch } from '@/lib/api-client';
 import { queryKeys } from '@/lib/query-keys';
 import {
-  ROLE_LABELS,
   UserListResponseSchema,
-  can,
   formatDate,
   formatDateTime,
+  hasPermission,
   type User,
 } from '@/shared';
 
@@ -53,10 +52,16 @@ function StatusBadges({ user }: { user: User }) {
 function UsersTable({
   currentUserId,
   showHistory,
+  canAssignRoles,
+  canDeactivate,
 }: {
   currentUserId: string;
   /** Links each user to their record's history in the audit log (audit.view). */
   showHistory: boolean;
+  /** Shows "Roles" (users.assign_roles). */
+  canAssignRoles: boolean;
+  /** Shows "Deactivate" / "Activate" (users.deactivate). */
+  canDeactivate: boolean;
 }) {
   const users = useInfiniteQuery({
     queryKey: queryKeys.users,
@@ -102,8 +107,8 @@ function UsersTable({
           <TableCell className="break-all">{user.email}</TableCell>
           <TableCell>
             <span className="flex flex-wrap gap-1">
-              {user.roles.map((role) => (
-                <Badge key={role}>{ROLE_LABELS[role]}</Badge>
+              {user.roleNames.map((name, index) => (
+                <Badge key={user.roles[index] ?? name}>{name}</Badge>
               ))}
             </span>
           </TableCell>
@@ -126,8 +131,8 @@ function UsersTable({
                 </Link>
               </Button>
             ) : null}
-            <EditRolesDialog user={user} isSelf={isSelf} />
-            <ToggleActiveDialog user={user} isSelf={isSelf} />
+            {canAssignRoles ? <EditRolesDialog user={user} isSelf={isSelf} /> : null}
+            {canDeactivate ? <ToggleActiveDialog user={user} isSelf={isSelf} /> : null}
           </TableCell>
         </TableRow>
       );
@@ -174,24 +179,32 @@ function UsersTable({
 
 export function UsersView() {
   const me = useCurrentUser();
-  const canManage = me.data ? can(me.data.roles, 'users.manage') : false;
-  const canViewAudit = me.data ? can(me.data.roles, 'audit.view') : false;
+  const permissions = me.data?.permissions;
+  const canView = hasPermission(permissions, 'users.view');
+  const canCreate =
+    hasPermission(permissions, 'users.create') && hasPermission(permissions, 'users.assign_roles');
+  const canViewAudit = hasPermission(permissions, 'audit.view');
 
   return (
     <>
       <PageHeader
         title="Users"
         description="Create users, change roles and deactivate accounts. Every change is audited."
-        actions={canManage ? <CreateUserDialog /> : undefined}
+        actions={canCreate ? <CreateUserDialog /> : undefined}
       />
-      {me.data && !canManage ? (
+      {me.data && !canView ? (
         <Alert variant="warning" role="alert" className="max-w-xl">
           <Lock aria-hidden="true" />
-          <AlertTitle>Admins only</AlertTitle>
-          <AlertDescription>You need the Admin role to manage users.</AlertDescription>
+          <AlertTitle>No access</AlertTitle>
+          <AlertDescription>You need the View users permission (users.view).</AlertDescription>
         </Alert>
       ) : me.data ? (
-        <UsersTable currentUserId={me.data.id} showHistory={canViewAudit} />
+        <UsersTable
+          currentUserId={me.data.id}
+          showHistory={canViewAudit}
+          canAssignRoles={hasPermission(permissions, 'users.assign_roles')}
+          canDeactivate={hasPermission(permissions, 'users.deactivate')}
+        />
       ) : null}
     </>
   );

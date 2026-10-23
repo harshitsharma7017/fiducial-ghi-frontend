@@ -17,9 +17,9 @@ import { clientQuery } from '@/lib/client-query';
 const OBJECT_ID = /^[a-f0-9]{24}$/i;
 
 export function ClientDetailView({ id }: { id: string }) {
-  const canManage = usePermission('clients.manage');
+  const canManage = usePermission('clients.update');
   const canViewAudit = usePermission('audit.view');
-  const canViewCases = usePermission('proposals.view');
+  const canViewCases = usePermission('employees.view');
   const validId = OBJECT_ID.test(id);
   const client = useQuery(clientQuery(validId ? id : null));
 

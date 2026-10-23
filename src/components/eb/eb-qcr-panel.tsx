@@ -27,10 +27,11 @@ import { apiFetch } from '@/lib/api-client';
 import { caseApi, refreshGhiCase } from '@/lib/api/ghi';
 import { ebQcrsQuery } from '@/lib/eb/api';
 import {
+  casePermission,
   EbQcrSchema,
   EbQcrSendResponseSchema,
-  GHI_QCR_STATUS_LABELS,
   formatDateTime,
+  GHI_QCR_STATUS_LABELS,
   type EbCaseRecord,
   type EbQcr,
 } from '@/shared';
@@ -44,10 +45,10 @@ import { Field } from './eb-ui';
  */
 export function EbQcrPanel({ record }: { record: EbCaseRecord }) {
   const queryClient = useQueryClient();
-  const canEdit = usePermission('proposals.edit');
-  const canApprove = usePermission('proposals.approve');
-  const canExport = usePermission('proposals.export');
-  const canSend = usePermission('proposals.send');
+  const canEdit = usePermission(casePermission(record.product, 'edit'));
+  const canApprove = usePermission(casePermission(record.product, 'approve'));
+  const canExport = usePermission(casePermission(record.product, 'export'));
+  const canSend = usePermission(casePermission(record.product, 'send'));
   const qcrs = useQuery(ebQcrsQuery(record.product, record.id));
   const [recommended, setRecommended] = useState('');
   const [remarks, setRemarks] = useState('');

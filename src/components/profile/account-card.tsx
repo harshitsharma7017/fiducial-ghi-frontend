@@ -5,7 +5,7 @@ import { LoadingState } from '@/components/states';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { useCurrentUser } from '@/hooks/use-current-user';
-import { ROLE_LABELS, formatDateTime } from '@/shared';
+import { formatDateTime } from '@/shared';
 
 /** The signed-in user's name, email, roles and last sign-in. */
 export function AccountCard() {
@@ -31,8 +31,8 @@ export function AccountCard() {
             <div>
               <dt className="mb-1 text-muted-foreground">Roles</dt>
               <dd className="flex flex-wrap gap-1">
-                {me.data.roles.map((role) => (
-                  <Badge key={role}>{ROLE_LABELS[role]}</Badge>
+                {me.data.roleNames.map((name, index) => (
+                  <Badge key={me.data.roles[index] ?? name}>{name}</Badge>
                 ))}
               </dd>
             </div>

@@ -41,7 +41,7 @@ const COLUMNS = 6;
  */
 export function EmployeesCard({ clientId }: { clientId: string }) {
   const searchId = useId();
-  const canEdit = usePermission('proposals.edit');
+  const canEdit = usePermission('employees.update');
   const [search, setSearch] = useState('');
   const q = useDebouncedValue(search.trim(), 300);
   const [page, setPage] = useState(1);
@@ -90,7 +90,11 @@ export function EmployeesCard({ clientId }: { clientId: string }) {
         </TableCell>
         <TableCell>{GHI_GENDER_LABELS[employee.gender]}</TableCell>
         <TableCell className="tabular whitespace-nowrap">
-          {formatDate(employee.dateOfBirth)}
+          {employee.dateOfBirth ? (
+            formatDate(employee.dateOfBirth)
+          ) : (
+            <span className="text-muted-foreground">Hidden</span>
+          )}
         </TableCell>
         <TableCell>
           <ul className="grid gap-0.5">

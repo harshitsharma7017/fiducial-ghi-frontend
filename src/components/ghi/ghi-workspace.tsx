@@ -94,7 +94,7 @@ export function GhiWorkspace({ id, initialTab }: { id: string; initialTab?: stri
 }
 
 function Loaded({ record, initialTab }: { record: GhiCaseRecord; initialTab?: string }) {
-  const canEdit = usePermission('proposals.edit');
+  const canEdit = usePermission('gmc.edit');
   const [tab, setTab] = useState<string>(
     () => TABS.find((item) => item.value === initialTab)?.value ?? nextTab(record),
   );

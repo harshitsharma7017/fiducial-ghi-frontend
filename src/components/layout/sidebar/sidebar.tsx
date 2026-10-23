@@ -1,7 +1,7 @@
 'use client';
 
 import { cn } from '@/lib/utils';
-import type { User } from '@/shared';
+import type { CurrentUser } from '@/shared';
 import { SidebarNav } from './sidebar-nav';
 import { SidebarUser } from './sidebar-user';
 
@@ -31,7 +31,13 @@ export function SidebarBrand({ collapsed }: { collapsed: boolean }) {
 }
 
 /** The desktop sidebar (1024 px and wider): 240 px expanded, a 56 px icon rail when collapsed. */
-export function Sidebar({ collapsed, user }: { collapsed: boolean; user: User | undefined }) {
+export function Sidebar({
+  collapsed,
+  user,
+}: {
+  collapsed: boolean;
+  user: CurrentUser | undefined;
+}) {
   return (
     <aside
       id={SIDEBAR_ID}
@@ -42,7 +48,7 @@ export function Sidebar({ collapsed, user }: { collapsed: boolean; user: User | 
       )}
     >
       <SidebarBrand collapsed={collapsed} />
-      <SidebarNav roles={user?.roles} collapsed={collapsed} />
+      <SidebarNav permissions={user?.permissions} collapsed={collapsed} />
       <SidebarUser user={user} collapsed={collapsed} />
     </aside>
   );

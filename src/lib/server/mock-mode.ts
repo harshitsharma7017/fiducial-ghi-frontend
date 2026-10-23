@@ -1,5 +1,11 @@
 import { createHash, randomUUID, timingSafeEqual } from 'node:crypto';
-import type { Role, User } from '@/shared';
+import {
+  ROLE_LABELS,
+  legacyPermissionsOf,
+  type CurrentUser,
+  type LegacyRole,
+  type User,
+} from '@/shared';
 
 /**
  * Mock API mode, server only. With USE_MOCK_API=true the BFF signs in the demo users and never
@@ -23,7 +29,8 @@ export const DEMO_USERS: readonly User[] = [
     id: 'de300000000000000000ad01',
     email: 'demo.admin@example.com',
     name: 'Asha Menon',
-    roles: ['ADMIN'] as Role[],
+    roles: ['ADMIN'],
+    roleNames: [ROLE_LABELS.ADMIN],
     active: true,
     lockedUntil: null,
     lastLoginAt: '2026-10-05T09:30:00.000Z',
@@ -35,7 +42,8 @@ export const DEMO_USERS: readonly User[] = [
     id: 'de300000000000000000ac02',
     email: 'demo.manager@example.com',
     name: 'Rahul Iyer',
-    roles: ['ACCOUNT_MANAGER'] as Role[],
+    roles: ['ACCOUNT_MANAGER'],
+    roleNames: [ROLE_LABELS.ACCOUNT_MANAGER],
     active: true,
     lockedUntil: null,
     lastLoginAt: '2026-10-04T11:15:00.000Z',
@@ -46,7 +54,8 @@ export const DEMO_USERS: readonly User[] = [
     id: 'de300000000000000000ae03',
     email: 'demo.approver@example.com',
     name: 'Vikram Shah',
-    roles: ['MANAGER'] as Role[],
+    roles: ['MANAGER'],
+    roleNames: [ROLE_LABELS.MANAGER],
     active: true,
     lockedUntil: null,
     lastLoginAt: '2026-10-04T10:05:00.000Z',
@@ -57,7 +66,8 @@ export const DEMO_USERS: readonly User[] = [
     id: 'de300000000000000000bc04',
     email: 'demo.placement@example.com',
     name: 'Priya Nair',
-    roles: ['PLACEMENT_EXEC'] as Role[],
+    roles: ['PLACEMENT_EXEC'],
+    roleNames: [ROLE_LABELS.PLACEMENT_EXEC],
     active: true,
     lockedUntil: null,
     lastLoginAt: '2026-10-05T08:40:00.000Z',
@@ -68,7 +78,8 @@ export const DEMO_USERS: readonly User[] = [
     id: 'de300000000000000000cd05',
     email: 'demo.readonly@example.com',
     name: 'Kavita Rao',
-    roles: ['READ_ONLY'] as Role[],
+    roles: ['READ_ONLY'],
+    roleNames: [ROLE_LABELS.READ_ONLY],
     active: true,
     lockedUntil: null,
     lastLoginAt: '2026-10-03T12:20:00.000Z',
@@ -100,6 +111,14 @@ export function createMockToken(userId: string): string {
 }
 
 /** The demo user a mock token belongs to, or null for any other token. */
+/**
+ * A demo user as /auth/me returns it: with the permissions their legacy role is migrated to (the
+ * same as a real user holding that system role).
+ */
+export function demoCurrentUser(user: User): CurrentUser {
+  return { ...user, permissions: legacyPermissionsOf(user.roles as LegacyRole[]) };
+}
+
 export function demoUserForToken(token: string): User | null {
   if (!token.startsWith(MOCK_TOKEN_PREFIX)) return null;
   const [, userId] = token.split('.');

@@ -3,14 +3,16 @@ import { render, screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { TooltipProvider } from '@/components/ui/tooltip';
-import type { User } from '@/shared';
+import { PERMISSIONS, type CurrentUser } from '@/shared';
 import { AppShell } from './app-shell';
 
-const ADMIN: User = {
+const ADMIN: CurrentUser = {
   id: '6ac3ca56d0f14307ed12b3d6',
   email: 'asha@example.com',
   name: 'Asha Menon',
   roles: ['ADMIN'],
+  roleNames: ['Admin'],
+  permissions: [...PERMISSIONS],
   active: true,
   lockedUntil: null,
   lastLoginAt: null,

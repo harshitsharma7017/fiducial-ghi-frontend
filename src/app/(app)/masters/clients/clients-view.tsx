@@ -34,7 +34,7 @@ export function ClientsView() {
   const searchId = useId();
   const [search, setSearch] = useState('');
   const q = useDebouncedValue(search.trim(), 300);
-  const canManage = usePermission('clients.manage');
+  const canManage = usePermission('clients.create');
 
   const clients = useInfiniteQuery({
     queryKey: queryKeys.clients.list(q),

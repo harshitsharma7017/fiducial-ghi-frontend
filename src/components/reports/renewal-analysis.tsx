@@ -84,8 +84,8 @@ function change(metric: RenewalMetric, value: string | null): string {
  * worked out by the API.
  */
 export function RenewalAnalysisPanel() {
-  const canEdit = usePermission('proposals.edit');
-  const canExport = usePermission('proposals.export');
+  const canEdit = usePermission('renewal_analysis.manage');
+  const canExport = usePermission('renewal_analysis.export');
   const [clientId, setClientId] = useState('');
   const [product, setProduct] = useState<EbProduct>('GMC');
   const [chosen, setChosen] = useState<string[]>([]);
@@ -587,7 +587,7 @@ function SavedReports({
 }) {
   const list = useQuery(savedReportsQuery(clientId));
   const report = useQuery(savedReportQuery(openId));
-  const canExport = usePermission('proposals.export');
+  const canExport = usePermission('renewal_analysis.export');
   const [error, setError] = useState<unknown>(null);
   const items = list.data?.items ?? [];
   if (items.length === 0 && !list.isError) return null;
@@ -662,7 +662,7 @@ function RecordedYears({
   product: EbProduct;
   onEdit: (year: RecordedPolicyYear) => void;
 }) {
-  const canEdit = usePermission('proposals.edit');
+  const canEdit = usePermission('renewal_analysis.manage');
   const list = useQuery(recordedYearsQuery(clientId, product));
   const items = list.data?.items ?? [];
   if (items.length === 0) return null;

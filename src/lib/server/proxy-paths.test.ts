@@ -4,6 +4,8 @@ import { isAllowedProxyPath } from './proxy-paths';
 describe('isAllowedProxyPath', () => {
   it.each([
     [['users']],
+    [['roles']],
+    [['roles', 'GPA_CASE_VIEWER', 'deactivate']],
     [['masters', 'occupancies']],
     [['clients']],
     [['clients', '0123456789abcdef01234567', 'locations']],

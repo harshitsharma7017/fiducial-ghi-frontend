@@ -12,6 +12,7 @@ const user = {
   email: 'admin@example.com',
   name: 'Admin',
   roles: ['ADMIN'],
+  roleNames: ['Admin'],
   active: true,
   lockedUntil: null,
   lastLoginAt: '2026-10-05T06:00:00.000Z',

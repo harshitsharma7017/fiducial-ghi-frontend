@@ -10,7 +10,7 @@ import {
   CommandItem,
   CommandList,
 } from '@/components/ui/command';
-import type { Role } from '@/shared';
+import type { Permission } from '@/shared';
 import { visibleGroups, type NavItem } from './nav-config';
 
 interface PageEntry {
@@ -21,8 +21,8 @@ interface PageEntry {
 }
 
 /** The navigable sidebar items the user may see; planned items are left out. */
-function pageEntries(roles: readonly Role[] | undefined): PageEntry[] {
-  return visibleGroups(roles).flatMap((group) =>
+function pageEntries(permissions: readonly Permission[] | undefined): PageEntry[] {
+  return visibleGroups(permissions).flatMap((group) =>
     group.items.flatMap((item) =>
       item.href && !item.planned
         ? [{ label: item.label, group: group.title, href: item.href, icon: item.icon }]
@@ -38,18 +38,18 @@ function pageEntries(roles: readonly Role[] | undefined): PageEntry[] {
 export function CommandPalette({
   open,
   onOpenChange,
-  roles,
+  permissions,
   returnFocusRef,
 }: {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  roles: readonly Role[] | undefined;
+  permissions: readonly Permission[] | undefined;
   returnFocusRef: RefObject<HTMLElement | null>;
 }) {
   const router = useRouter();
   const [query, setQuery] = useState('');
   const needle = query.trim().toLowerCase();
-  const pages = pageEntries(roles).filter(
+  const pages = pageEntries(permissions).filter(
     (page) => needle === '' || page.label.toLowerCase().includes(needle),
   );
 

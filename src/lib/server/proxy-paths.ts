@@ -5,6 +5,8 @@
 // every area (audit, for example, is Admin only).
 const ALLOWED_AREAS = new Set([
   'users',
+  // Database-driven roles: the roles page and the user form's role selector.
+  'roles',
   'masters',
   'clients',
   'insurers',

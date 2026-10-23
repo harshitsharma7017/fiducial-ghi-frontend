@@ -4,7 +4,7 @@ import userEvent from '@testing-library/user-event';
 import type { ReactNode } from 'react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { json, urlOf } from '@/components/proposals/rfq/rfq-fixtures.test-utils';
-import type { Role } from '@/shared';
+import { legacyPermissionsOf, type LegacyRole as Role } from '@/shared';
 import { CensusImport } from './census-import';
 import { CASE_ID, censusImport, ghiCase, qcr } from './ghi-fixtures.test-utils';
 import { QcrTable } from './qcr-table';
@@ -16,7 +16,16 @@ import { RequirementsForm } from './requirements-form';
 
 const roles = vi.hoisted(() => ({ current: ['ACCOUNT_MANAGER'] as Role[] }));
 vi.mock('@/hooks/use-current-user', () => ({
-  useCurrentUser: () => ({ data: { id: 'b'.repeat(24), name: 'Asha Rao', roles: roles.current } }),
+  useCurrentUser: () => ({
+    data: {
+      id: 'b'.repeat(24),
+      name: 'Asha Rao',
+      roles: roles.current,
+      roleNames: [],
+      // As /auth/me gives them for the migrated legacy roles.
+      permissions: legacyPermissionsOf(roles.current),
+    },
+  }),
 }));
 vi.mock('next/navigation', () => ({ useRouter: () => ({ push: vi.fn() }) }));
 

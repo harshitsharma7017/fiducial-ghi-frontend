@@ -8,7 +8,7 @@ import { usePermission } from '@/hooks/use-permission';
 
 /** E-2: the wording of the RFQ and reminder mails, edited by Admins without a developer. */
 export function EmailTemplatesView() {
-  const canManage = usePermission('masters.manage');
+  const canManage = usePermission('email_templates.manage');
   const templates = useEmailTemplates();
 
   return (

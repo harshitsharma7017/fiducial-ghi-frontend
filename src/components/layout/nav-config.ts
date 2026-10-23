@@ -7,6 +7,7 @@ import {
   Landmark,
   Mail,
   Settings,
+  ShieldCheck,
   ShieldPlus,
   Stethoscope,
   TrendingUp,
@@ -15,16 +16,17 @@ import {
   UsersRound,
   type LucideIcon,
 } from 'lucide-react';
-import { ROLES, can, type Permission, type Role } from '@/shared';
+import { hasAnyPermission, type Permission } from '@/shared';
 
 export interface NavItem {
   label: string;
   icon: LucideIcon;
   /**
-   * What a user needs to see the item and, for a link, to open its page (src/shared/permissions.ts).
-   * Planned items use the permission of the area they belong to.
+   * What a user needs to see the item and, for a link, to open its page (src/shared/permissions.ts):
+   * one permission, or a list of which any one is enough. Planned items use the permission of the
+   * area they belong to.
    */
-  permission: Permission;
+  permission: PagePermission;
   /** Omitted for planned features, which show as disabled with a "Planned" tag. */
   href?: string;
   planned?: true;
@@ -33,6 +35,14 @@ export interface NavItem {
    * whether a page without that parameter counts as a match (the list's default type).
    */
   activeParam?: { name: string; value: string; isDefault?: true };
+}
+
+/** One permission, or a list of which the user needs at least one. */
+export type PagePermission = Permission | readonly Permission[];
+
+/** True when the user's permissions satisfy a page permission. */
+export function allows(permissions: readonly Permission[], needed: PagePermission): boolean {
+  return hasAnyPermission(permissions, typeof needed === 'string' ? [needed] : needed);
 }
 
 export interface NavGroup {
@@ -46,14 +56,14 @@ export const NAV_GROUPS: readonly NavGroup[] = [
     // Fiducial_frontend.
     title: 'Employee Benefits',
     items: [
-      { label: 'GMC (Group Health)', href: '/ghi', icon: HeartPulse, permission: 'proposals.view' },
+      { label: 'GMC (Group Health)', href: '/ghi', icon: HeartPulse, permission: 'gmc.view' },
       {
         label: 'GPA (Personal Accident)',
         href: '/eb/gpa',
         icon: ShieldPlus,
-        permission: 'proposals.view',
+        permission: 'gpa.view',
       },
-      { label: 'GTLI (Term Life)', href: '/eb/gtli', icon: Umbrella, permission: 'proposals.view' },
+      { label: 'GTLI (Term Life)', href: '/eb/gtli', icon: Umbrella, permission: 'gtli.view' },
     ],
   },
   {
@@ -72,13 +82,13 @@ export const NAV_GROUPS: readonly NavGroup[] = [
         href: '/claims-analysis',
         icon: ChartPie,
         // Claims hold medical information: like Claims, hidden from Read-only users.
-        permission: 'claims.view',
+        permission: 'claims_analysis.view',
       },
       {
         label: 'Renewal analysis',
         href: '/renewal',
         icon: TrendingUp,
-        permission: 'proposals.view',
+        permission: 'renewal_analysis.view',
       },
     ],
   },
@@ -95,52 +105,49 @@ export const NAV_GROUPS: readonly NavGroup[] = [
         label: 'Insurers',
         href: '/masters/insurers',
         icon: Landmark,
-        permission: 'masters.view',
+        permission: 'insurers.view',
       },
       {
         label: 'Email templates',
         href: '/masters/email-templates',
         icon: Mail,
-        permission: 'masters.view',
+        permission: 'email_templates.view',
       },
       // The Family Plan Master (N2).
       {
         label: 'Family plans',
         href: '/masters/family-plans',
         icon: UsersRound,
-        permission: 'masters.view',
+        permission: 'family_plans.view',
       },
       {
         label: 'Age bands',
         href: '/masters/age-bands',
         icon: ChartBarStacked,
-        permission: 'masters.view',
+        permission: 'age_bands.view',
       },
     ],
   },
   {
     title: 'Admin',
     items: [
-      { label: 'Users', href: '/users', icon: UserCog, permission: 'users.manage' },
+      { label: 'Users', href: '/users', icon: UserCog, permission: 'users.view' },
+      { label: 'Roles', href: '/roles', icon: ShieldCheck, permission: 'roles.view' },
       { label: 'Audit log', href: '/audit', icon: History, permission: 'audit.view' },
       { label: 'Settings', href: '/settings', icon: Settings, permission: 'settings.view' },
     ],
   },
 ];
 
-/** True when every role holds the permission, so it can show before the user has loaded. */
-export function isOpenToEveryRole(permission: Permission): boolean {
-  return ROLES.every((role) => can([role], permission));
-}
-
 /**
- * The groups and items a user may see. Each item needs its permission, and a group left with
- * no items is dropped. While the user loads (roles undefined) only the items every role may see
- * are shown, so nothing appears and then disappears.
+ * The groups and items a user may see, from the permissions of their active roles (/auth/me).
+ * Each item needs its permission, and a group left with no items is dropped. Roles are
+ * configurable, so no item is known to be open to everyone: while the user loads (permissions
+ * undefined) nothing is shown.
  */
-export function visibleGroups(roles: readonly Role[] | undefined): NavGroup[] {
-  const allowed = (item: NavItem) =>
-    roles ? can(roles, item.permission) : isOpenToEveryRole(item.permission);
+export function visibleGroups(permissions: readonly Permission[] | undefined): NavGroup[] {
+  if (!permissions) return [];
+  const allowed = (item: NavItem) => allows(permissions, item.permission);
   return NAV_GROUPS.flatMap((group) => {
     const items = group.items.filter(allowed);
     return items.length > 0 ? [{ ...group, items }] : [];
@@ -152,17 +159,19 @@ function pathOf(href: string): string {
 }
 
 /** Pages outside the navigation, with the permission each needs. */
-const OTHER_PAGES: readonly { path: string; permission: Permission }[] = [
-  { path: '/ghi/new', permission: 'proposals.create' },
-  { path: '/claims/new', permission: 'claims.process' },
-  { path: '/claims/links', permission: 'claims.process' },
-  { path: '/claims/settings', permission: 'claims.admin' },
+const OTHER_PAGES: readonly { path: string; permission: PagePermission }[] = [
+  // A new case of any product (GMC unless ?product= names another); the form offers the products
+  // the user may create.
+  { path: '/ghi/new', permission: ['gmc.create', 'gpa.create', 'gtli.create'] },
+  { path: '/claims/new', permission: 'claims.create' },
+  { path: '/claims/links', permission: 'claims.links' },
+  { path: '/claims/settings', permission: 'claims.settings' },
   // TPA claims (N9, N11): read with claims.view (as /claims), imported and configured apart.
-  { path: '/claims/tpa/import', permission: 'claims.process' },
-  { path: '/claims/tpa/formats', permission: 'claims.admin' },
+  { path: '/claims/tpa/import', permission: 'claims.tpa_import' },
+  { path: '/claims/tpa/formats', permission: 'claims.tpa_manage' },
 ];
 
-const PAGE_PERMISSIONS: readonly { path: string; permission: Permission }[] = [
+const PAGE_PERMISSIONS: readonly { path: string; permission: PagePermission }[] = [
   ...NAV_GROUPS.flatMap((group) =>
     group.items.flatMap((item) =>
       item.href && !item.planned ? [{ path: pathOf(item.href), permission: item.permission }] : [],
@@ -173,12 +182,12 @@ const PAGE_PERMISSIONS: readonly { path: string; permission: Permission }[] = [
 
 /**
  * The permission needed to open a page: that of the nav link or other page with the longest
- * path that is the page or one of its parents (so /proposals/{id} needs proposals.view and
- * /proposals/new needs proposals.create). Null for pages open to every signed-in user, such as
+ * path that is the page or one of its parents (so /ghi/{id} needs gmc.view and /claims/new needs
+ * claims.create). Null for pages open to every signed-in user, such as
  * /profile.
  */
-export function pagePermission(pathname: string): Permission | null {
-  let match: { path: string; permission: Permission } | null = null;
+export function pagePermission(pathname: string): PagePermission | null {
+  let match: { path: string; permission: PagePermission } | null = null;
   for (const page of PAGE_PERMISSIONS) {
     const covers = pathname === page.path || pathname.startsWith(`${page.path}/`);
     if (covers && (!match || page.path.length > match.path.length)) match = page;

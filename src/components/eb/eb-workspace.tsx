@@ -16,12 +16,13 @@ import { usePermission } from '@/hooks/use-permission';
 import { ApiError } from '@/lib/api-client';
 import { ebCaseQuery } from '@/lib/eb/api';
 import {
+  casePermission,
   EB_PRODUCT_LABELS,
   EB_PRODUCT_SLUGS,
   EB_STAGES,
-  GHI_CASE_TYPE_LABELS,
   formatDate,
   formatDateTime,
+  GHI_CASE_TYPE_LABELS,
   type EbCaseRecord,
   type EbRoutedProduct,
   type EbStage,
@@ -104,7 +105,7 @@ export function EbWorkspace({
 }
 
 function Loaded({ record, initialTab }: { record: EbCaseRecord; initialTab?: string }) {
-  const canEdit = usePermission('proposals.edit');
+  const canEdit = usePermission(casePermission(record.product, 'edit'));
   const [tab, setTab] = useState<string>(
     () => TABS.find((item) => item.value === initialTab)?.value ?? nextTab(record),
   );

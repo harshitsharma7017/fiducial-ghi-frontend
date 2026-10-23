@@ -3,27 +3,28 @@
 import { usePathname } from 'next/navigation';
 import type { ReactNode } from 'react';
 import { AccessDeniedState, LoadingState } from '@/components/states';
-import { can, type Role } from '@/shared';
-import { isOpenToEveryRole, pagePermission } from './nav-config';
+import type { Permission } from '@/shared';
+import { allows, pagePermission } from './nav-config';
 
 /**
- * Shows the page only to users whose roles hold its permission (pagePermission in
+ * Shows the page only to users whose active roles grant its permission (pagePermission in
  * nav-config.ts); others get "You do not have access" inside the shell, and the page never
- * renders or sends its requests. Pages every role may open render at once. The API checks the
- * same permission on every route, so this is for the screen, not the security boundary.
+ * renders or sends its requests. Pages that need no permission (such as /profile) render at once.
+ * The API checks the same permission on every route, so this is for the screen, not the security
+ * boundary.
  */
 export function PageGate({
-  roles,
+  permissions,
   children,
 }: {
-  /** Undefined while the user loads. */
-  roles: readonly Role[] | undefined;
+  /** The permissions of the user's active roles; undefined while the user loads. */
+  permissions: readonly Permission[] | undefined;
   children: ReactNode;
 }) {
   const pathname = usePathname();
   const permission = pagePermission(pathname);
-  if (permission === null || isOpenToEveryRole(permission)) return <>{children}</>;
-  if (!roles) return <LoadingState label="Checking your access…" className="max-w-xl" />;
-  if (!can(roles, permission)) return <AccessDeniedState />;
+  if (permission === null) return <>{children}</>;
+  if (!permissions) return <LoadingState label="Checking your access…" className="max-w-xl" />;
+  if (!allows(permissions, permission)) return <AccessDeniedState />;
   return <>{children}</>;
 }

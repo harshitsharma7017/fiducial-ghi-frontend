@@ -31,9 +31,10 @@ import { apiFetch } from '@/lib/api-client';
 import { caseApi, refreshGhiCase } from '@/lib/api/ghi';
 import { ebIssuesQuery, ebMembersQuery, ebSummaryQuery } from '@/lib/eb/api';
 import {
+  casePermission,
+  formatDate,
   GHI_GENDER_LABELS,
   GHI_RELATIONSHIP_LABELS,
-  formatDate,
   nomineeText,
   type EbCaseRecord,
   type EbMember,
@@ -49,7 +50,7 @@ import { TemplateDownloadDialog } from './template-download-dialog';
  * template download and the import. Nothing can be added without a plan (18.10).
  */
 export function EbCensusPanel({ record }: { record: EbCaseRecord }) {
-  const canEdit = usePermission('proposals.edit');
+  const canEdit = usePermission(casePermission(record.product, 'edit'));
   const editable =
     canEdit &&
     !record.locked &&
@@ -236,7 +237,13 @@ function Members({ record, editable }: { record: EbCaseRecord; editable: boolean
                       <TableCell>{member.name}</TableCell>
                       <TableCell>{GHI_RELATIONSHIP_LABELS[member.relationship]}</TableCell>
                       <TableCell>{GHI_GENDER_LABELS[member.gender]}</TableCell>
-                      <TableCell className="tabular">{formatDate(member.dateOfBirth)}</TableCell>
+                      <TableCell className="tabular">
+                        {member.dateOfBirth ? (
+                          formatDate(member.dateOfBirth)
+                        ) : (
+                          <span className="text-muted-foreground">Hidden</span>
+                        )}
+                      </TableCell>
                       <TableCell className="text-right tabular">{member.age}</TableCell>
                       {monthly ? (
                         <TableCell className="text-right tabular">

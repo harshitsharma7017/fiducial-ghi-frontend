@@ -62,8 +62,8 @@ const STATUS_VARIANT = {
 
 /** The insurers on the case (up to five), where each stands, and sending the approved RFQ. */
 export function RfqInsurers({ record, state }: { record: WorkflowCase; state: GhiRfqState }) {
-  const canEdit = usePermission('proposals.edit');
-  const canSend = usePermission('proposals.send');
+  const canEdit = usePermission('gmc.edit');
+  const canSend = usePermission('gmc.send');
   const [dialog, setDialog] = useState<'choose' | 'send' | 'outside' | null>(null);
   const [declining, setDeclining] = useState<GhiCaseInsurer | null>(null);
   const [results, setResults] = useState<DispatchGhiRfqResponse['results'] | null>(null);

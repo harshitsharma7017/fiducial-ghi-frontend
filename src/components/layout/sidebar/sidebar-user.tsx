@@ -4,10 +4,16 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 import { initials, rolesLabel } from '@/lib/display';
 import { cn } from '@/lib/utils';
-import type { User } from '@/shared';
+import type { CurrentUser } from '@/shared';
 
 /** The signed-in user's name and role. In the rail only the initials show, with a tooltip. */
-export function SidebarUser({ user, collapsed }: { user: User | undefined; collapsed: boolean }) {
+export function SidebarUser({
+  user,
+  collapsed,
+}: {
+  user: CurrentUser | undefined;
+  collapsed: boolean;
+}) {
   if (!user) {
     return (
       <div className="border-t border-sidebar-border p-3" aria-hidden="true">

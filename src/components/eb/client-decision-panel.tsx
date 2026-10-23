@@ -15,7 +15,7 @@ import { usePermission } from '@/hooks/use-permission';
 import { apiFetch } from '@/lib/api-client';
 import { caseApi, ghiFileHref, refreshGhiCase } from '@/lib/api/ghi';
 import { todayIst } from '@/lib/dates';
-import { EbQcrSchema, formatDate, type EbCaseRecord, type EbQcr } from '@/shared';
+import { casePermission, EbQcrSchema, formatDate, type EbCaseRecord, type EbQcr } from '@/shared';
 import { AwaitingNote } from './awaiting-confirmation';
 import { Field } from './eb-ui';
 
@@ -26,7 +26,7 @@ import { Field } from './eb-ui';
  * workflow (open question 1).
  */
 export function ClientDecisionPanel({ record, qcr }: { record: EbCaseRecord; qcr: EbQcr }) {
-  const canEdit = usePermission('proposals.edit');
+  const canEdit = usePermission(casePermission(record.product, 'edit'));
   const queryClient = useQueryClient();
   const decision = qcr.clientDecision;
   const [choice, setChoice] = useState<'ACCEPTED' | 'REJECTED'>('ACCEPTED');

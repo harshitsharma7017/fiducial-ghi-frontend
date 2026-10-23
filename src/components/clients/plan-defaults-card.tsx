@@ -20,7 +20,7 @@ import { EB_PRODUCT_LABELS, formatDateTime, type EbProduct } from '@/shared';
  * a user sets one.
  */
 export function PlanDefaultsCard({ clientId }: { clientId: string }) {
-  const canManage = usePermission('clients.manage');
+  const canManage = usePermission('clients.update');
   const defaults = useQuery(planDefaultsQuery(clientId));
   return (
     <Card>

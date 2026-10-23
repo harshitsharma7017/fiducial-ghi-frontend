@@ -20,9 +20,10 @@ import { ApiError, apiFetch } from '@/lib/api-client';
 import { AnyRecordSchema, caseApi, useGhiMutation } from '@/lib/api/ghi';
 import { familyPlansQuery } from '@/lib/eb/api';
 import {
-  PLAN_ASSIGNMENT_SOURCE_LABELS,
+  casePermission,
   formatDate,
   mixingText,
+  PLAN_ASSIGNMENT_SOURCE_LABELS,
   slotText,
   type EbPlanAssignment,
   type EbProduct,
@@ -45,7 +46,7 @@ export function PlanCard({
   /** The case is open, unlocked and not placed. */
   editable: boolean;
 }) {
-  const canEdit = usePermission('proposals.edit');
+  const canEdit = usePermission(casePermission(product, 'edit'));
   const [open, setOpen] = useState(false);
   return (
     <Card>
